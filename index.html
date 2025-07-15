@@ -7,137 +7,68 @@
   <style>
     body {
       font-family: sans-serif;
-      background: #f4f4f4;
+      background: #f8f5fc;
       margin: 0;
       padding: 1em;
     }
     h1 {
       text-align: center;
+      color: #5e35b1;
     }
-    h2 {
-      background: #004d40;
-      color: white;
-      padding: 0.5em;
+    .contenedor-horizontal {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 1em;
     }
     .semestre {
-      margin-bottom: 2em;
+      min-width: 280px;
+      flex-shrink: 0;
+      background: #ede7f6;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      background: #7e57c2;
+      color: white;
+      padding: 0.5em;
+      font-size: 1em;
+      margin: 0 0 0.5em 0;
+      border-radius: 5px;
+      text-align: center;
     }
     .ramos {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 10px;
     }
     .ramo {
-      background: #b2dfdb; /* verde agua */
+      background: #d1c4e9;
       padding: 10px;
       border-radius: 5px;
       cursor: pointer;
-      min-width: 200px;
       text-align: center;
       user-select: none;
+      transition: background 0.3s ease;
     }
     .ramo.aprobado {
-      background: #81d4fa; /* celeste */
+      background: #b39ddb;
       text-decoration: line-through;
       color: black;
     }
     .ramo.bloqueado {
-      background: #ccc;
-      color: #777;
+      background: #e0e0e0;
+      color: #888;
       cursor: not-allowed;
     }
   </style>
 </head>
 <body>
   <h1>Malla Curricular Interactiva</h1>
-  <div id="malla"></div>
-
+  <div class="contenedor-horizontal" id="malla"></div>
   <script>
-    const malla = [
-      { semestre: 1, ramos: [
-        { nombre: "Introducción al Cálculo y Álgebra", id: "ICyA" },
-        { nombre: "Economía General", id: "EG" },
-        { nombre: "Introducción a la Ingeniería en Recursos Naturales", id: "IIRN" },
-        { nombre: "Química General I", id: "QG1" },
-        { nombre: "Biología General", id: "BG" },
-        { nombre: "Derechos Humanos", id: "DH" },
-        { nombre: "Formación Integral Institucional", id: "FII" },
-      ]},
-      { semestre: 2, ramos: [
-        { nombre: "Cálculo Diferencial e Integral", id: "CDI", requisitos: ["ICyA"] },
-        { nombre: "Álgebra Lineal", id: "AL", requisitos: ["ICyA"] },
-        { nombre: "Innovación y Emprendimiento", id: "IE" },
-        { nombre: "Química General II", id: "QG2", requisitos: ["QG1"] },
-        { nombre: "Aplicaciones Biológicas", id: "AB" },
-        { nombre: "Formación Integral Extraprogramática", id: "FIE" },
-        { nombre: "Inglés Comunicacional I", id: "IN1" },
-      ]},
-      { semestre: 3, ramos: [
-        { nombre: "Cálculo Multivariable", id: "CM", requisitos: ["CDI"] },
-        { nombre: "Ecuaciones Diferenciales", id: "ED", requisitos: ["CDI", "AL"] },
-        { nombre: "Física I", id: "F1", requisitos: ["ICyA"] },
-        { nombre: "Bío-Orgánica", id: "BO", requisitos: ["QG2"] },
-        { nombre: "Recursos Faunísticos", id: "RF", requisitos: ["BG"] },
-        { nombre: "Programación Computacional", id: "PC" },
-      ]},
-      { semestre: 4, ramos: [
-        { nombre: "Estadística I", id: "E1", requisitos: ["CDI"] },
-        { nombre: "Simulación y Optimización", id: "SO", requisitos: ["CM", "ED"] },
-        { nombre: "Física II", id: "F2", requisitos: ["F1"] },
-        { nombre: "Química Ambiental", id: "QA", requisitos: ["BO"] },
-        { nombre: "Recursos Vegetales", id: "RV", requisitos: ["BG"] },
-        { nombre: "Procesos Industriales", id: "PI", requisitos: ["F1"] },
-      ]},
-      { semestre: 5, ramos: [
-        { nombre: "Estadística II", id: "E2", requisitos: ["E1"] },
-        { nombre: "Economía Ambiental", id: "EA", requisitos: ["EG"] },
-        { nombre: "Climatología Aplicada", id: "CL" },
-        { nombre: "Hidrología", id: "H", requisitos: ["E1", "ED"] },
-        { nombre: "Sistemas de Información Geográfica", id: "SIG", requisitos: ["PC"] },
-        { nombre: "Microbiología Ambiental", id: "MA", requisitos: ["PI", "BO"] },
-        { nombre: "Inglés Comunicacional II", id: "IN2", requisitos: ["IN1"] },
-      ]},
-      { semestre: 6, ramos: [
-        { nombre: "Administración de Recursos Naturales", id: "ARN", requisitos: ["EG"] },
-        { nombre: "Ecología y Manejo de Recursos Naturales", id: "EMRN", requisitos: ["CM"] },
-        { nombre: "Geomorfología y Suelos", id: "GS", requisitos: ["CL"] },
-        { nombre: "Evaluación de Impacto Ambiental", id: "EIA", requisitos: ["QA"] },
-        { nombre: "Producción Sustentable I", id: "PS1", requisitos: ["PI"] },
-        { nombre: "Taller Integrado", id: "TI", requisitos: ["SIG", "H", "EMRN"] },
-        { nombre: "Inglés Comunicacional III", id: "IN3", requisitos: ["IN2"] },
-      ]},
-      { semestre: 7, ramos: [
-        { nombre: "Planificación Estratégica", id: "PE", requisitos: ["EA"] },
-        { nombre: "Ordenamiento y Gestión Territorial", id: "OGT", requisitos: ["SIG"] },
-        { nombre: "Métodos Multicriterio", id: "MMC", requisitos: ["SIG"] },
-        { nombre: "Energías Renovables I", id: "ER1", requisitos: ["CL", "H"] },
-        { nombre: "Producción Sustentable II", id: "PS2", requisitos: ["PS1"] },
-        { nombre: "Inglés Comunicacional IV", id: "IN4", requisitos: ["IN3"] },
-      ]},
-      { semestre: 8, ramos: [
-        { nombre: "Metodología de la Investigación", id: "MI", requisitos: ["PS1", "OGT"] },
-        { nombre: "Planificación Integrada", id: "PI2", requisitos: ["OGT"] },
-        { nombre: "Modelamiento Espacial", id: "ME", requisitos: ["MMC"] },
-        { nombre: "Energías Renovables II", id: "ER2", requisitos: ["CL", "H"] },
-        { nombre: "Análisis de Ciclo de Vida", id: "ACV", requisitos: ["PS1"] },
-        { nombre: "Práctica Profesional", id: "PP", requisitos: ["EIA", "OGT"] },
-      ]},
-      { semestre: 9, ramos: [
-        { nombre: "Actividad de Titulación I", id: "AT1", requisitos: ["MI"] },
-        { nombre: "Electivo I", id: "EL1", requisitos: ["240SCT"] },
-        { nombre: "Electivo II", id: "EL2", requisitos: ["240SCT"] },
-        { nombre: "Electivo III", id: "EL3", requisitos: ["240SCT"] },
-        { nombre: "Formación Integral Extraprogramática", id: "FIE2" },
-        { nombre: "Formación Integral Institucional", id: "FII2" },
-      ]},
-      { semestre: 10, ramos: [
-        { nombre: "Actividad de Titulación II", id: "AT2", requisitos: ["AT1"] },
-        { nombre: "Electivo IV", id: "EL4", requisitos: ["240SCT"] },
-        { nombre: "Electivo V", id: "EL5", requisitos: ["240SCT"] },
-        { nombre: "Formación Integral Extraprogramática", id: "FIE3" },
-        { nombre: "Formación Integral Institucional", id: "FII3" },
-      ]},
-    ];
+    const malla = [...]; // (el contenido original de malla aquí)
 
     const estadoRamos = {};
 
